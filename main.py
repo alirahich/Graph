@@ -19,15 +19,7 @@ class Menu(QMainWindow):
 
     def __init__(self):
         super().__init__()
-        self.algos = {  
-                        'Dijkstra': GUI(),
-                        'Prime': GUI(),
-                        'DFS': GUI(),
-                        'BFS':  GUI(),
-                        'Kruskal': GUI(),
-                        'Bellman-Ford': GUI(),
-                        'Ford Fulkerson': GUI()
-                    }
+        self.w = None
 
         self.initUI()
     def initUI(self):
@@ -56,14 +48,14 @@ class Menu(QMainWindow):
         btn7 = QPushButton("Warshall", self)
         btn7.move(150, 200)
 
-        btn0.clicked.connect(self.buttonClicked)
-        btn1.clicked.connect(self.buttonClicked)
-        btn2.clicked.connect(self.buttonClicked)
-        btn3.clicked.connect(self.buttonClicked)
-        btn4.clicked.connect(self.buttonClicked)
-        btn5.clicked.connect(self.buttonClicked)
-        btn6.clicked.connect(self.buttonClicked)
-        btn7.clicked.connect(self.buttonClicked)
+        btn0.clicked.connect(self.openWindow)
+        btn1.clicked.connect(self.openWindow)
+        btn2.clicked.connect(self.openWindow)
+        btn3.clicked.connect(self.openWindow)
+        btn4.clicked.connect(self.openWindow)
+        btn5.clicked.connect(self.openWindow)
+        btn6.clicked.connect(self.openWindow)
+        btn7.clicked.connect(self.openWindow)
 
         self.statusBar()
 
@@ -71,16 +63,11 @@ class Menu(QMainWindow):
         self.setWindowTitle('Menu-Graphs')
         self.show()
 
-    def openWindow(self, algo):
-        self.w = self.algos[algo]
+    def openWindow(self):
+        algo = self.sender().text()
+        self.w = GUI()
+        self.w.setAlgo(algo)
         self.w.show()
-    
-    def buttonClicked(self):
-        sender = self.sender()
-        for algo in self.algos.keys():
-            if sender.text() == algo:
-                self.openWindow(algo)
-
 
 def main():
     app = QApplication(sys.argv)

@@ -167,6 +167,7 @@ class GUI(QtWidgets.QWidget):
         """Constructor of GUI.
         """
         super(GUI, self).__init__()
+        self.algo = None
         self.setup_gui()
         
 
@@ -246,13 +247,25 @@ class GUI(QtWidgets.QWidget):
             self.G.add_edge(node1, node2, weight=weight)
             self.form.plot_canvas.plot(self.G)
 
+    def setAlgo(self, algo):
+        self.algo = algo
         
 
     def run(self):
         """Takes source and destination from user and runs the Dijkstra algorithm to calculate shortest path.
         """
+
         source = str(self.form.textEdit.toPlainText())
         dest = str(self.form.textEdit_2.toPlainText())
+        algos =  {  
+                'Dijkstra': Dijkstra,
+                'Prime': Dijkstra,
+                'DFS': Dijkstra,
+                'BFS': Dijkstra,
+                'Kruskal': Dijkstra,
+                'Bellman-Ford': Dijkstra,
+                'Ford Fulkerson': Dijkstra
+            }
         
         self.form.textEdit.clear()
         self.form.textEdit_2.clear()
@@ -261,13 +274,12 @@ class GUI(QtWidgets.QWidget):
             self.show_dialog("Empty argument.")
             return 
 
-        
         if self.G.has_node(source) and self.G.has_node(dest):
             if source in nx.algorithms.descendants(self.G, dest):
                 graph = nx.to_dict_of_dicts(self.G) # converting to dict based graph.
-                dijkstra = Dijkstra(graph)
-                parents,  visited = dijkstra.find_route(source, dest)
-                shortest_path = dijkstra.generate_path(parents, source, dest)
+                currentAlgo = algos[self.algo](graph)
+                parents,  visited = currentAlgo.find_route(source, dest)
+                shortest_path = currentAlgo.generate_path(parents, source, dest)
                 shortest_path = " -> ".join(shortest_path)
                 result = f"Distance is {visited[dest]} units.\nShortest path from {source} to {dest} is {shortest_path}"
                 self.form.textEdit_3.setText(result)
